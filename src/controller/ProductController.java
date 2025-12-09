@@ -18,5 +18,8 @@ public ProductController(Product product, ProductContainer productCont, Inventor
 	this.inventoryCont = inventoryCont;
 }
 
+public Product createProduct(String SKU, int price, String info, Inventory inventory, Location location) {
+	
+}
 
 }
