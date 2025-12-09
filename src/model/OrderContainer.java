@@ -28,7 +28,7 @@ public class OrderContainer {
 			res = true;
 		} else {
 			for (Order existingOrder : orders) {
-				if (existingOrder.getOrderId() == newOrder.getOrderId()) {
+				if (existingOrder.getOrderId().equals(newOrder.getOrderId())) {
 					System.out.println("Fejl: Order med orderId: " + newOrder.getOrderId() + " findes allerede.);");
 					res = false;
 					return res;
@@ -42,7 +42,7 @@ public class OrderContainer {
 	
 	public Order findOrder(String orderId) {
 		for (Order order : orders) {
-			if (order.getOrderId() == orderId) {
+			if (order.getOrderId().equals(orderId)) {
 				return order;
 			}
 		}

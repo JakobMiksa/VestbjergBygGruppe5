@@ -12,18 +12,10 @@ import model.Product;
 import model.Staff;
 
 public class OrderController {
-	private Product product;
-	private Staff staff;
-	private Customer customer;
-	private CustomerController customerCtrl;
-	private ProductController productCtrl;
-	private InventoryController inventoryCtrl;
-	private StaffController staffCtrl;
-	private LocationController locationCtrl;
-	private OrderContainer orderCont;
+	private OrderContainer orderCont = OrderContainer.getInstance();
 	
 	public OrderController() {
-		
+		super();
 	}
 	
 	public Order createOrder(String orderId, Customer customer, Staff staff, ArrayList<OrderLine> orderLine, OrderStatus orderStatus, DeliveryStatus deliveryStatus, double total, String date, String expiryDate) {
@@ -35,7 +27,20 @@ public class OrderController {
 		return newOrder;
 	}
 	
-	public Product findProduct(String SKU) {
+    public boolean addProduct(Order order, Product product, int quantity) {
+    	boolean res = false;
+        if (product == null) {
+        	res = true;
+        	return res;
+        }
+        
+        OrderLine line = new OrderLine(quantity, product.getPrice().getPrice() * quantity, product);
+        order.addOrderLine(line);
+        order.recalculateTotal();
+        return res;
+    }
+    
+	//public Product findProduct(String SKU) {
 		
-	}
+	//}
 }

@@ -32,7 +32,7 @@ public class StaffContainer {
 	
 	public Staff findStaff(String staffId) {
 		for (Staff staff : staffMembers) {
-			if (staff.getStaffId() == staffId) {
+			if (staff.getStaffId().equals(staffId)) {
 				return staff;
 			}
 		}

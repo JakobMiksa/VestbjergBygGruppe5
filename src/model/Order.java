@@ -26,7 +26,19 @@ public class Order {
 		
 		orderLine = new ArrayList<>();
 	}
-
+	
+	public void addOrderLine(OrderLine line) {
+		orderLine.add(line);
+	}
+	
+    public void recalculateTotal() {
+        double total = 0.0;
+        for (OrderLine line : orderLine) {
+            total += line.getUnitPrice();
+        }
+        this.total = total;
+    }
+    
 	public Staff getStaff() {
 		return staff;
 	}
