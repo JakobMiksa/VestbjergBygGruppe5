@@ -34,4 +34,8 @@ public class OrderController {
 		}
 		return newOrder;
 	}
+	
+	public Product findProduct(String SKU) {
+		
+	}
 }
