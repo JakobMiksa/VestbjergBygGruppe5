@@ -17,4 +17,3 @@ public ProductController(Product product, ProductContainer productCont, Inventor
 	this.inventoryCtrl = inventoryCtrl;
 	this.inventoryCont = inventoryCont;
 }
-
