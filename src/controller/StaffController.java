@@ -9,7 +9,6 @@ public class StaffController {
 	private StaffContainer staffContainer = StaffContainer.getInstance();
 	
 	public StaffController() {
-
 	}
 	
 	public boolean createStaff(String name, String address, String email, String phone, String staffId, String department) {
