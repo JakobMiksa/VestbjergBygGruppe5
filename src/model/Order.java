@@ -3,17 +3,17 @@ package model;
 import java.util.ArrayList;
 
 public class Order {
-	private Staff staff;
-	private Customer customer;
-	private ArrayList<OrderLine> orderLine;
 	private String orderId;
+	private Customer customer;
+	private Staff staff;
+	private ArrayList<OrderLine> orderLine;
 	private OrderStatus orderStatus;
 	private DeliveryStatus deliveryStatus;
 	private double total;
 	private String date;
 	private String expiryDate;
 	
-	public Order(Staff staff, Customer customer, ArrayList<OrderLine> orderLine, String orderId, OrderStatus orderStatus, DeliveryStatus deliveryStatus, double total, String date, String expiryDate) {
+	public Order(String orderId, Customer customer, Staff staff, ArrayList<OrderLine> orderLine, OrderStatus orderStatus, DeliveryStatus deliveryStatus, double total, String date, String expiryDate) {
 		this.staff = staff;
 		this.customer = customer;
 		this.orderId = orderId;
