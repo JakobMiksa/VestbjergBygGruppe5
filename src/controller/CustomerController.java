@@ -10,12 +10,12 @@ public class CustomerController {
 	private OrderController orderController;
 	
 	public CustomerController() {
-		this.customerCont = new CustomerContainer();
+		this.customerCont = customerCont;
 		this.orderController = orderController;
 	}
 	
-	public Customer createCustomer(int customerId, double personalDiscount) {
-		Customer customer = new Customer(customerId, personalDiscount);
+	public Customer createCustomer(String name, String address, String email, String phone, int customerId, double personalDiscount) {
+		Customer customer = new Customer(name, address, email, phone, customerId, personalDiscount);
 		customerCont.addCustomer(customer);
 		return customer;
 		 
