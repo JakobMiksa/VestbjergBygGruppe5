@@ -20,11 +20,15 @@ public class MenuUI {
 	private CustomerController customerCtrl;
 	private StaffController staffCtrl;
 	
+	private Scanner scanner;
+	
 	public MenuUI() {
 		orderCtrl = new OrderController();
 		productCtrl = new ProductController();
 		customerCtrl = new CustomerController();
 		staffCtrl = new StaffController();
+		
+		scanner = new Scanner(System.in);
 		createMenu();
 	}
 
@@ -38,6 +42,9 @@ public class MenuUI {
 	            case "1":
 	                createOrderMenu();
 	                break;
+	            case "2": 
+	            		stockMenu();
+	            		break;
 	            case "0":
 	                done = true;
 	                break;
@@ -46,8 +53,14 @@ public class MenuUI {
 	        }
 	    }
 	    System.out.println("Lukker system...");
+	    scanner.close();
 	}
 	
+	private void stockMenu() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private void createOrderMenu() {
 		boolean created = false;
         System.out.println("*** Opretter ordre ***");
@@ -114,29 +127,46 @@ public class MenuUI {
             System.out.println("Intet produkt tilføjet. Ordren annulleres.");
             return; 
         }
-        String customerId = prompt("Find kunden ved at indtaste CPR/CVR:");
-        int customerIdStr = Integer.parseInt(customerId);
-        Customer customer = customerCtrl.findCustomer(customerIdStr);
+        
+        //Step 4&5 find og tilføj customer
+        while (true) {
+            String inputVal = prompt("Find kunden ved at indtaste CPR/CVR (eller tryk Enter for at springe over):");
 
-        if (customer != null) {
-            	String add = prompt("Vil du tilføje kunden til ordren? Ja/Nej:");
-            
-            	if (add.equalsIgnoreCase("ja")) {
-                	currOrder.setCustomer(customer);
-                	System.out.println("Kunde tilføjet til ordren /n");
-               		printCustomerInfo(customer);
-            		} 
-        	} else {
-        		  	System.out.println("Kunde blev ikke tilføjet");
-        		  	break;
-        		}
-		//Step 6 i use case, change order status to offer
+            if (inputVal.isEmpty()) {
+                System.out.println("Ingen kunde valgt. Fortsætter...");
+                break; // Stopper løkken (brugeren sprang over)
+            }
+
+            try {
+                int customerId = Integer.parseInt(inputVal);
+                Customer customer = customerCtrl.findCustomer(customerId);
+
+                if (customer != null) {
+                    String add = prompt("Vil du tilføje kunden til ordren? Ja/Nej:");
+                    if (add.equalsIgnoreCase("ja")) {
+                        currOrder.setCustomer(customer);
+                        System.out.println("Kunde tilføjet.");
+                        printCustomerInfo(customer);
+                    }
+                    break; // Stopper løkken (succes - vi er færdige her)
+                } else {
+                    // Her er INTET break, så løkken kører igen
+                    System.out.println("Ingen kunde fundet med ID: " + customerId + ". Prøv igen.");
+                }
+
+            } catch (NumberFormatException e) {
+                // Her er INTET break, så løkken kører igen
+                System.out.println("Fejl: ID skal være et tal, ikke bogstaver. Prøv igen.");
+            }
+        }
 		orderCtrl.changeOrderStatus(currOrder, OrderStatus.offer);
 		System.out.println("Order status ændres til offer, kunden har 7 dage til at acceptere");
 		System.out.println("Offer er blevet accepteret af kunden.");
+		
 		// Step 7
 		orderCtrl.changeOrderStatus(currOrder, OrderStatus.order);
 		String deliveryOption = prompt("Skal denne ordre leveres? Ja/Nej"); 
+		
 		// Step 8 og 9
 		if (deliveryOption.equalsIgnoreCase("ja")) {
 			System.out.println("Leveringsomkostninger beregnes...");
@@ -217,7 +247,7 @@ public class MenuUI {
 	private String prompt(String message) {
 	    System.out.println(message);
 	    System.out.print("> ");
-	    return new Scanner(System.in).nextLine();
+	    return scanner.nextLine();
 	}
 	
 	private boolean retryPrompt() {
@@ -236,8 +266,6 @@ public class MenuUI {
 
 	public String getUserInput() {
 		System.out.print("> ");
-		Scanner scanner = new Scanner(System.in);
-		String userInput = scanner.nextLine();
-		return userInput;
+		return scanner.nextLine();
 	}
 }

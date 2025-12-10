@@ -25,15 +25,6 @@ public class OrderController {
 		return order;
 	}
 	
-	/* public Order createOrder(String orderId, Customer customer, Staff staff, ArrayList<OrderLine> orderLine, OrderStatus orderStatus, DeliveryStatus deliveryStatus, double total, String date, String expiryDate) {
-		Order newOrder = new Order(orderId, customer, staff, orderLine, orderStatus, deliveryStatus, total, expiryDate, expiryDate);
-		boolean success = orderCont.addOrder(newOrder);
-		if (!success) {
-			newOrder = null;
-		}
-		return newOrder;
-	} */
-	
     public boolean addProduct(Order order, Product product, int quantity) {
     	boolean res = false;
         if (product == null) {
@@ -59,7 +50,19 @@ public class OrderController {
         		}
 	}
 	
-	public void finishOrder(Order order) {
+	public boolean finishOrder(Order order) {
+		if (order == null) {
+			return false;
+		}
+		for (OrderLine line : order.getOrderLine()) {
+			Product p = line.getProduct();
+			
+			if (p != null && p.getInventory() != null) {
+				p.getInventory().decreaseStock(line.getQuantity());
+			}
+		}
+		order.recalculateTotal();
 		changeOrderStatus(order, OrderStatus.finished);
+		return orderCont.addOrder(order);
 	}
 }

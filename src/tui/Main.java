@@ -10,7 +10,7 @@ public class Main {
 
     public static void createTestData() {
         // Opret medarbejder
-    	 Staff staff1 = new Staff("Joe", "Joe Street", "joe@vestbjerg.dk", "101010", "1", "Trælast");
+    		 Staff staff1 = new Staff("Joe", "Joe Street", "joe@vestbjerg.dk", "101010", "1", "Trælast");
          Staff staff2 = new Staff("Anna", "Anna Avenue", "anna@vestbjerg.dk", "303030", "2", "Byggevare");
          Staff staff3 = new Staff("Mark", "Mark Road", "mark@vestbjerg.dk", "404040", "3", "Murer");
 
