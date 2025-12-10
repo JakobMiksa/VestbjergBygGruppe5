@@ -2,13 +2,15 @@ package model;
 
 public class Customer extends Person {
 	private int customerId;
+	private CustomerStatus customerStatus;
 	private double personalDiscount; 
 
-	public Customer(String name, String address, String email, String phone, int customerId, double personalDiscount) {
+	public Customer(String name, String address, String email, String phone, int customerId, double personalDiscount, CustomerStatus customerStatus) {
 		super(name, address, email, phone);
 		
 		this.customerId = customerId;
 		this.personalDiscount = personalDiscount;
+		this.customerStatus = customerStatus.Private;
 	}
 
 	public int getCustomerId() {

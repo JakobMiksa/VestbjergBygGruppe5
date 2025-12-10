@@ -8,5 +8,5 @@ package controller;
 public class InventoryController {
 	 private InventoryContainer inventoryCont = InventoryContainer.getInstance();
 	 private Location location;
-
+	 
 }

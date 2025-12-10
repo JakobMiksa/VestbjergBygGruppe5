@@ -11,6 +11,7 @@ public class InventoryContainer {
 
     /** Listen over alle inventarer i containeren. */
     private List<Inventory> inventories;
+<<<<<<< HEAD
 
     /**
      * Opretter en ny, tom InventoryContainer.
@@ -24,6 +25,21 @@ public class InventoryContainer {
      *
      * @param inventory det inventarobjekt, der skal tilføjes
      */
+=======
+    public static InventoryContainer instance;
+    
+    public InventoryContainer() {
+        inventories = new ArrayList<>();
+    }
+    
+	public static InventoryContainer getInstance() {
+		if (instance == null) {
+			instance = new InventoryContainer();
+		} 
+		return instance;
+	}
+	
+>>>>>>> adb702d062b93c4e97873cfe5efa14f9cf2e5ff8
     public void addInventory(Inventory inventory) {
         inventories.add(inventory);
     }

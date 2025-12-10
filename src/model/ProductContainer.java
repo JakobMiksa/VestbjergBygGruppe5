@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class ProductContainer {
 	private ArrayList<Product> products;
-	private static ProductContainer instance;
+	public static ProductContainer instance;
 	
 	private ProductContainer() {
 		products = new ArrayList<>();

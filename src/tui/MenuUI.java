@@ -5,6 +5,7 @@ import controller.OrderController;
 import controller.ProductController;
 import controller.StaffController;
 import model.Customer;
+import model.CustomerStatus;
 import model.Order;
 import model.Product;
 import model.Staff;
@@ -35,10 +36,10 @@ public class MenuUI {
 	                createOrderMenu();
 	                break;
 	            case "2":
-	                createCustomerMenu(); // Kalder den nye kundemetode
+	            	createStaffMenu(); 
 	                break;
 	            case "3":
-	                createStaffMenu();    // Kalder den nye medarbejdermetode
+	                createCustomerMenu();   
 	                break;
 	            case "0":
 	                done = true;
@@ -119,7 +120,7 @@ public class MenuUI {
 	    String address = prompt("Adresse:");
 	    String email = prompt("Email:");
 	    String phone = prompt("Telefon:");
-	    
+	 
 	    String idStr = prompt("Kunde ID (CPR eller CVR):");
 	    int id = Integer.parseInt(idStr);
 	    
@@ -127,17 +128,39 @@ public class MenuUI {
         boolean validDiscount = false;
         
         while (!validDiscount) {
-            String input = prompt("Personlig rabat (%) (Max 30):");
+            String input = prompt("Personlig rabat (%) (Max 20):");
             discount = Double.parseDouble(input);
             
-            if (discount <= 30.0) {
+            if (discount <= 20.0) {
                 validDiscount = true;
             } else {
-                System.out.println("Fejl: Rabatten må højst være 30%. Prøv igen.");
+                System.out.println("Fejl: Rabatten må højst være 20%. Prøv igen.");
             }
         }
-	    
-	    Customer customer = customerCtrl.createCustomer(name, address, email, phone, id, discount);
+        
+        CustomerStatus selectedStatus = null;
+        
+        while (selectedStatus == null) {
+            System.out.println("Vælg kundestatus:");
+            System.out.println("1. Private");
+            System.out.println("2. Business");
+            
+            String choice = prompt("Indtast valg (1 eller 2):");
+            
+            switch (choice) {
+                case "1":
+                    selectedStatus = CustomerStatus.Private;
+                    break;
+                case "2":
+                    selectedStatus = CustomerStatus.Business;
+                    break;
+                default:
+                    System.out.println("Ugyldigt valg. Prøv igen.");
+                    break;
+            }
+        }
+        
+	    Customer customer = customerCtrl.createCustomer(name, address, email, phone, id, discount, selectedStatus);
 	    
 	    if (customer != null) {
 	        System.out.println("Kunde oprettet: " + customer.getName());
@@ -145,6 +168,8 @@ public class MenuUI {
 	        System.out.println("Fejl: Kunne ikke oprette kunde");
 	    }
 	}
+	
+		
 	private String prompt(String message) {
 	    System.out.println(message);
 	    System.out.print("> ");
@@ -161,8 +186,8 @@ public class MenuUI {
 	    StringBuilder sb = new StringBuilder();
 	    sb.append("****** Vestbjerg Byggecenter ******\n");
 	    sb.append("(1) Opret ordre\n");
-	    sb.append("(2) Opret kunde\n");      // Ny
-	    sb.append("(3) Opret medarbejder\n"); // Ny
+	    sb.append("(2) Opret medarbejder\n");      // Ny
+	    sb.append("(3) Opret kunde\n"); // Ny
 	    sb.append("(0) Luk system\n");
 	    return sb.toString();
 	}
