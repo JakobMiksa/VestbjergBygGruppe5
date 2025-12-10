@@ -4,61 +4,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * En containerklasse, der håndterer en samling af {@link Inventory}-objekter.
- * Giver funktionalitet til at tilføje, fjerne, søge og hente inventarposter.
+ * En Singleton-container, der håndterer en samling af {@link Inventory}-objekter.
+ * Klassen giver mulighed for at tilføje, fjerne og søge i inventarlisten.
  */
 public class InventoryContainer {
 
-    /** Listen over alle inventarer i containeren. */
+    /** Den statiske instans af InventoryContainer (Singleton). */
+    private static InventoryContainer instance;
+
+    /** Listen over alle inventarposter i containeren. */
     private List<Inventory> inventories;
-<<<<<<< HEAD
 
     /**
-     * Opretter en ny, tom InventoryContainer.
+     * Privat constructor for at sikre Singleton-designmønsteret.
+     * Opretter en tom liste af inventarer.
      */
-    public InventoryContainer() {
+    private InventoryContainer() {
         inventories = new ArrayList<>();
+    }
+
+    /**
+     * Returnerer den globale Singleton-instans af InventoryContainer.
+     * Hvis instansen ikke eksisterer, oprettes den.
+     *
+     * @return den eneste instans af InventoryContainer
+     */
+    public static InventoryContainer getInstance() {
+        if (instance == null) {
+            instance = new InventoryContainer();
+        }
+        return instance;
     }
 
     /**
      * Tilføjer et nyt {@link Inventory} til containeren.
      *
-     * @param inventory det inventarobjekt, der skal tilføjes
+     * @param inventory inventarobjektet, der skal tilføjes
      */
-=======
-    public static InventoryContainer instance;
-    
-    public InventoryContainer() {
-        inventories = new ArrayList<>();
-    }
-    
-	public static InventoryContainer getInstance() {
-		if (instance == null) {
-			instance = new InventoryContainer();
-		} 
-		return instance;
-	}
-	
->>>>>>> adb702d062b93c4e97873cfe5efa14f9cf2e5ff8
     public void addInventory(Inventory inventory) {
         inventories.add(inventory);
     }
 
     /**
-     * Fjerner et bestemt {@link Inventory} fra containeren.
+     * Fjerner et givent {@link Inventory} fra containeren.
      *
-     * @param inventory det inventarobjekt, der skal fjernes
-     * @return true hvis inventaret blev fundet og fjernet; false ellers
+     * @param inventory inventarobjektet, der ønskes fjernet
+     * @return true hvis objektet blev fjernet; false ellers
      */
     public boolean removeInventory(Inventory inventory) {
         return inventories.remove(inventory);
     }
 
     /**
-     * Finder et {@link Inventory} ud fra dets tilknyttede {@link Product}.
+     * Finder et inventar baseret på et bestemt {@link Product}.
      *
-     * @param product produktet, der skal søges efter
-     * @return det matchende Inventory, eller null hvis ingen blev fundet
+     * @param product produktet, der søges efter
+     * @return det matchende Inventory, eller null hvis intet findes
      */
     public Inventory findByProduct(Product product) {
         for (Inventory inv : inventories) {
@@ -70,11 +71,11 @@ public class InventoryContainer {
     }
 
     /**
-     * Finder et {@link Inventory} baseret på både {@link Location} og {@link Product}.
+     * Finder et inventar baseret på både lokation og produkt.
      *
-     * @param location lokationen, der skal søges efter
-     * @param product produktet, der skal søges efter
-     * @return det matchende Inventory, eller null hvis ingen blev fundet
+     * @param location den ønskede lokation
+     * @param product det ønskede produkt
+     * @return det matchende Inventory, eller null hvis intet findes
      */
     public Inventory findByLocationAndProduct(Location location, Product product) {
         for (Inventory inv : inventories) {
@@ -87,19 +88,18 @@ public class InventoryContainer {
     }
 
     /**
-     * Henter en liste over alle inventarer i containeren.
-     * Den returnerede liste er en defensiv kopi.
+     * Returnerer en kopi af alle inventarer i containeren.
      *
-     * @return en ny liste med alle inventarer
+     * @return en ny liste med alle Inventory-objekter
      */
     public List<Inventory> getAllInventories() {
         return new ArrayList<>(inventories);
     }
 
     /**
-     * Returnerer antallet af inventarobjekter i containeren.
+     * Returnerer antallet af inventarposter i containeren.
      *
-     * @return størrelsen på inventarlisten
+     * @return antal Inventory-objekter
      */
     public int size() {
         return inventories.size();
