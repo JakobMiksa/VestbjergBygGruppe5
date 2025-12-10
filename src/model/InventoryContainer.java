@@ -1,6 +1,5 @@
 package model;
 
-<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,8 +45,5 @@ public class InventoryContainer {
     public int size() {
         return inventories.size();
     }
-=======
-public class InventoryContainer {
 
->>>>>>> e50e8c7b2f7f6b982d4c0a8932dee1ba66483375
 }
