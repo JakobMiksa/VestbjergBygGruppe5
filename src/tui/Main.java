@@ -1,8 +1,6 @@
 package tui;
 
-import model.Staff;
-
-public class main {
+public class Main {
 	public static void main(String[] args) {
 		new MenuUI();
 	}

@@ -1,7 +1,6 @@
 package tui;
 
 import java.util.Scanner;
-
 import controller.OrderController;
 import controller.ProductController;
 import controller.StaffController;
