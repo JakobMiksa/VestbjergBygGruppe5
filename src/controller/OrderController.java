@@ -47,7 +47,19 @@ public class OrderController {
         return res;
     }
     
-	//public Product findProduct(String SKU) {
-		
-	//}
+	public void changeOrderStatus(Order order, OrderStatus newStatus) {
+		if (order != null && newStatus != null) {
+			order.setOrderStatus(newStatus);
+        		}
+	}
+	
+	public void changeDeliveryStatus(Order order, DeliveryStatus newStatus) {
+		if (order != null && newStatus != null) {
+			order.setDeliveryStatus(newStatus);
+        		}
+	}
+	
+	public void finishOrder(Order order) {
+		changeOrderStatus(order, OrderStatus.finished);
+	}
 }

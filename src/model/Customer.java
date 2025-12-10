@@ -27,4 +27,12 @@ public class Customer extends Person {
 	public void setPersonalDiscount(double personalDiscount) {
 		this.personalDiscount = personalDiscount;
 	}
+
+	public CustomerStatus getCustomerStatus() {
+		return customerStatus;
+	}
+
+	public void setCustomerStatus(CustomerStatus customerStatus) {
+		this.customerStatus = customerStatus;
+	}
 }

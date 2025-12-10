@@ -6,7 +6,10 @@ import controller.ProductController;
 import controller.StaffController;
 import model.Customer;
 import model.CustomerStatus;
+import model.DeliveryStatus;
 import model.Order;
+import model.OrderLine;
+import model.OrderStatus;
 import model.Product;
 import model.Staff;
 import controller.CustomerController;
@@ -35,12 +38,6 @@ public class MenuUI {
 	            case "1":
 	                createOrderMenu();
 	                break;
-	            case "2":
-	            	createStaffMenu(); 
-	                break;
-	            case "3":
-	                createCustomerMenu();   
-	                break;
 	            case "0":
 	                done = true;
 	                break;
@@ -61,8 +58,7 @@ public class MenuUI {
         
         if (staff == null) {
             System.out.println("Ukendt medarbejder");
-            if (!retryPrompt()) break; 
-            continue;
+            return;
         }
         
         //Step 1: Opret ordren med Staff
@@ -89,86 +85,94 @@ public class MenuUI {
                 }
             }
         }
-       //Order order = orderCtrl.createOrder(staff, null, staff, null, null, null, 0, staffId, staffId);
-	}
-	}
-	
-	private void createStaffMenu() {
-	    System.out.println("*** Opret Medarbejder ***");
-	    
-	    String name = prompt("Navn:");
-	    String address = prompt("Adresse:");
-	    String email = prompt("Email:");
-	    String phone = prompt("Telefon:");
-	    
-	    String staffId = prompt("Medarbejder ID:");
-	    String department = prompt("Afdeling:");
-	    
-	    boolean success = staffCtrl.createStaff(name, address, email, phone, staffId, department);
-	    
-	    if (success) {
-	        System.out.println("Medarbejder oprettet: " + name);
-	    } else {
-	        System.out.println("Fejl: Kunne ikke oprette medarbejder.");
-	    }
-	}
-	
-	private void createCustomerMenu() {
-	    System.out.println("*** Opret Kunde ***");
+        // Step 4 og 5 i use case find/set customer
+        String customerId = prompt("Find kunden ved at indtaste CPR/CVR:");
+        int customerIdStr = Integer.parseInt(customerId);
+        Customer customer = customerCtrl.findCustomer(customerIdStr);
 
-	    String name = prompt("Navn:");
-	    String address = prompt("Adresse:");
-	    String email = prompt("Email:");
-	    String phone = prompt("Telefon:");
-	 
-	    String idStr = prompt("Kunde ID (CPR eller CVR):");
-	    int id = Integer.parseInt(idStr);
-	    
-	    double discount = 0.0;
-        boolean validDiscount = false;
-        
-        while (!validDiscount) {
-            String input = prompt("Personlig rabat (%) (Max 20):");
-            discount = Double.parseDouble(input);
+        if (customer != null) {
+            	String add = prompt("Vil du tilføje kunden til ordren? Ja/Nej:");
             
-            if (discount <= 20.0) {
-                validDiscount = true;
-            } else {
-                System.out.println("Fejl: Rabatten må højst være 20%. Prøv igen.");
-            }
-        }
-        
-        CustomerStatus selectedStatus = null;
-        
-        while (selectedStatus == null) {
-            System.out.println("Vælg kundestatus:");
-            System.out.println("1. Private");
-            System.out.println("2. Business");
-            
-            String choice = prompt("Indtast valg (1 eller 2):");
-            
-            switch (choice) {
-                case "1":
-                    selectedStatus = CustomerStatus.Private;
-                    break;
-                case "2":
-                    selectedStatus = CustomerStatus.Business;
-                    break;
-                default:
-                    System.out.println("Ugyldigt valg. Prøv igen.");
-                    break;
-            }
-        }
-        
-	    Customer customer = customerCtrl.createCustomer(name, address, email, phone, id, discount, selectedStatus);
-	    
-	    if (customer != null) {
-	        System.out.println("Kunde oprettet: " + customer.getName());
-	    } else {
-	        System.out.println("Fejl: Kunne ikke oprette kunde");
-	    }
-	}
+            	if (add.equalsIgnoreCase("ja")) {
+                	currOrder.setCustomer(customer);
+                	System.out.println("Kunde tilføjet til ordren /n");
+               		customerCtrl.printCustomerInfo(customer);
+            		} 
+        	} else {
+        		  	System.out.println("Kunde blev ikke tilføjet");
+        		  	break;
+        		}
+		//Step 6 i use case, change order status to offer
+		orderCtrl.changeOrderStatus(currOrder, OrderStatus.offer);
+		System.out.println("Order status ændres til offer, kunden har 7 dage til at acceptere");
+		System.out.println("Offer er blevet accepteret af kunden.");
+		orderCtrl.changeOrderStatus(currOrder, OrderStatus.order);
+		// Would you like it delivered? y n
+		String deliveryOption = prompt("Skal denne ordre leveres? Ja/Nej");
+		// yes = 
+		if (deliveryOption.equalsIgnoreCase("ja")) {
+			System.out.println("Leveringsomkostninger beregnes...");
+			orderCtrl.changeDeliveryStatus(currOrder, DeliveryStatus.delivered);
+			orderCtrl.finishOrder(currOrder);
+			printInvoice(currOrder);
+		} else {
+			System.out.println("Der er ingen leveringsomkostninger.. Ordre færdiggøres.");
+			orderCtrl.changeDeliveryStatus(currOrder, DeliveryStatus.inStore);
+			orderCtrl.finishOrder(currOrder);
+			printInvoice(currOrder);
+			break;
+		}
+	}	
+}
 	
+	public void printInvoice(Order order) {
+	    System.out.println("\n================ FAKTURA ================");
+	    System.out.println("Ordre ID:    " + order.getOrderId());
+	    System.out.println("Dato:        " + order.getDate()); 
+	    
+	    if (order.getCustomer() != null) {
+	        System.out.println("Kunde:       " + order.getCustomer().getName());
+	        System.out.println("Adresse:     " + order.getCustomer().getAddress());
+	    } else {
+	        System.out.println("Kunde:       [Ingen kunde tildelt]");
+	    }
+	    
+	    if (order.getStaff() != null) {
+	        System.out.println("Sælger:      " + order.getStaff().getName());
+	    }
+
+	    System.out.println("-----------------------------------------");
+	    // %-20s betyder venstrejusteret tekst på 20 pladser
+	    System.out.printf("%-20s %-10s %-10s\n", "Produkt", "Antal", "Pris");
+	    System.out.println("-----------------------------------------");
+
+	    if (order.getOrderLine() != null) {
+	        for (OrderLine line : order.getOrderLine()) {
+	            Product p = line.getProduct();
+	            String pName = (p != null) ? p.getInfo() : "Ukendt"; 
+	            
+	            System.out.printf("%-20s %-10d %-10.2f\n", 
+	                (pName.length() > 20 ? pName.substring(0, 17) + "..." : pName), 
+	                line.getQuantity(), 
+	                line.getUnitPrice() 
+	            );
+	        }
+	    }
+
+	    System.out.println("-----------------------------------------");
+	    
+	    order.recalculateTotal(); 
+	    System.out.printf("TOTAL BELØB:                  %-10.2f\n", order.getTotal());
+	    System.out.println("=========================================\n");
+	
+
+        System.out.println("-----------------------------------------");
+        // Ensure total is up to date
+        order.recalculateTotal(); 
+        System.out.printf("TOTAL AMOUNT:                 %-10.2f\n", order.getTotal());
+        System.out.println("=========================================\n");
+    }
+
 		
 	private String prompt(String message) {
 	    System.out.println(message);
@@ -177,17 +181,15 @@ public class MenuUI {
 	}
 	
 	private boolean retryPrompt() {
-	    System.out.println("Ønsker du at prøve igen Y N");
+	    System.out.println("Ønsker du at prøve igen Ja/Nej");
 	    String in = getUserInput().toLowerCase();
-	    return in.equals("y");
+	    return in.equals("ja");
 	}
 	
 	public String options() {
 	    StringBuilder sb = new StringBuilder();
 	    sb.append("****** Vestbjerg Byggecenter ******\n");
 	    sb.append("(1) Opret ordre\n");
-	    sb.append("(2) Opret medarbejder\n");      // Ny
-	    sb.append("(3) Opret kunde\n"); // Ny
 	    sb.append("(0) Luk system\n");
 	    return sb.toString();
 	}
