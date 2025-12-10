@@ -6,11 +6,19 @@ import java.util.List;
 public class InventoryContainer {
 
     private List<Inventory> inventories;
-
+    public static InventoryContainer instance;
+    
     public InventoryContainer() {
         inventories = new ArrayList<>();
     }
-
+    
+	public static InventoryContainer getInstance() {
+		if (instance == null) {
+			instance = new InventoryContainer();
+		} 
+		return instance;
+	}
+	
     public void addInventory(Inventory inventory) {
         inventories.add(inventory);
     }
