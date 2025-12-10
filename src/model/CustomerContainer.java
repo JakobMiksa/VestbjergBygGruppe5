@@ -29,7 +29,6 @@ public class CustomerContainer {
 		} else {
 			for (Customer existingCustomer : customers) {
 				if (existingCustomer.getCustomerId() == customer.getCustomerId()) {
-					System.out.println("Fejl: Customer med Customer ID: " + customer.getCustomerId() + " findes allerede.");
 					res = false;
 					return res;
 				}

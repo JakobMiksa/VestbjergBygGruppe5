@@ -75,17 +75,45 @@ public class MenuUI {
             } else {
                 Product product = productCtrl.findProduct(sku);
                 if (product != null) {
-                    String qtyString = prompt("Indtast antal:");
-                    int quantity = Integer.parseInt(qtyString); 
                     
+                    int quantity = 0;
+                    boolean validInput = false;
+
+                    while (!validInput) {
+                        String qtyString = prompt("Indtast antal (Lager: " + product.getInventory().getCurrStock() + "):");
+
+                        try {
+                            quantity = Integer.parseInt(qtyString);
+
+                            if (quantity <= 0) {
+                                System.out.println("Antal skal være mindst 1.");
+                            }
+
+                            else if (quantity > product.getInventory().getCurrStock()) {
+                                System.out.println("Fejl: Der er kun " + product.getInventory().getCurrStock() + " stk. på lager.");
+                            }
+                            else {
+                                validInput = true;
+                            }
+
+                        } catch (NumberFormatException e) {
+                            System.out.println("Fejl: Ugyldigt input. Indtast venligst et tal.");
+                        }
+                    }
+
                     orderCtrl.addProduct(currOrder, product, quantity);
                     System.out.println("Produkt tilføjet!");
+
                 } else {
                     System.out.println("Produkt ikke fundet.");
                 }
             }
         }
-        // Step 4 og 5 i use case find/set customer
+        
+        if (currOrder.getOrderLine().isEmpty()) {
+            System.out.println("Intet produkt tilføjet. Ordren annulleres.");
+            return; 
+        }
         String customerId = prompt("Find kunden ved at indtaste CPR/CVR:");
         int customerIdStr = Integer.parseInt(customerId);
         Customer customer = customerCtrl.findCustomer(customerIdStr);
@@ -96,7 +124,7 @@ public class MenuUI {
             	if (add.equalsIgnoreCase("ja")) {
                 	currOrder.setCustomer(customer);
                 	System.out.println("Kunde tilføjet til ordren /n");
-               		customerCtrl.printCustomerInfo(customer);
+               		printCustomerInfo(customer);
             		} 
         	} else {
         		  	System.out.println("Kunde blev ikke tilføjet");
@@ -106,10 +134,10 @@ public class MenuUI {
 		orderCtrl.changeOrderStatus(currOrder, OrderStatus.offer);
 		System.out.println("Order status ændres til offer, kunden har 7 dage til at acceptere");
 		System.out.println("Offer er blevet accepteret af kunden.");
+		// Step 7
 		orderCtrl.changeOrderStatus(currOrder, OrderStatus.order);
-		// Would you like it delivered? y n
-		String deliveryOption = prompt("Skal denne ordre leveres? Ja/Nej");
-		// yes = 
+		String deliveryOption = prompt("Skal denne ordre leveres? Ja/Nej"); 
+		// Step 8 og 9
 		if (deliveryOption.equalsIgnoreCase("ja")) {
 			System.out.println("Leveringsomkostninger beregnes...");
 			orderCtrl.changeDeliveryStatus(currOrder, DeliveryStatus.delivered);
@@ -122,13 +150,16 @@ public class MenuUI {
 			printInvoice(currOrder);
 			break;
 		}
-	}	
+		created = true;
+	}
 }
 	
 	public void printInvoice(Order order) {
 	    System.out.println("\n================ FAKTURA ================");
 	    System.out.println("Ordre ID:    " + order.getOrderId());
 	    System.out.println("Dato:        " + order.getDate()); 
+	    System.out.println("Status:      " + order.getOrderStatus());
+	    System.out.println("Levering:    " + order.getDeliveryStatus());
 	    
 	    if (order.getCustomer() != null) {
 	        System.out.println("Kunde:       " + order.getCustomer().getName());
@@ -142,7 +173,6 @@ public class MenuUI {
 	    }
 
 	    System.out.println("-----------------------------------------");
-	    // %-20s betyder venstrejusteret tekst på 20 pladser
 	    System.out.printf("%-20s %-10s %-10s\n", "Produkt", "Antal", "Pris");
 	    System.out.println("-----------------------------------------");
 
@@ -162,18 +192,28 @@ public class MenuUI {
 	    System.out.println("-----------------------------------------");
 	    
 	    order.recalculateTotal(); 
-	    System.out.printf("TOTAL BELØB:                  %-10.2f\n", order.getTotal());
-	    System.out.println("=========================================\n");
-	
+	    if (order.getDeliveryStatus() == DeliveryStatus.delivered) {
+	        System.out.printf("Levering (Gebyr):             %10.2f\n", 500.00);
+	    }
 
-        System.out.println("-----------------------------------------");
-        // Ensure total is up to date
-        order.recalculateTotal(); 
-        System.out.printf("TOTAL AMOUNT:                 %-10.2f\n", order.getTotal());
-        System.out.println("=========================================\n");
+	    System.out.printf("TOTAL BELØB:                  %10.2f\n", order.getTotal());
+	    System.out.println("=========================================\n");
     }
 
-		
+	public Customer printCustomerInfo(Customer customer) {
+	    System.out.println("****** Kunde Info ******");
+	    System.out.println("Navn:          " + customer.getName());
+	    System.out.println("Adresse:       " + customer.getAddress());
+	    System.out.println("Email:         " + customer.getEmail());
+	    System.out.println("Telefon:       " + customer.getPhone());
+	    System.out.println("Kunde ID:      " + customer.getCustomerId());
+	    System.out.println("Rabat:         " + customer.getPersonalDiscount() + " %");
+	    System.out.println("Status:        " + customer.getCustomerStatus());
+	    System.out.println("************************");
+	    
+	    return customer;
+	}
+	
 	private String prompt(String message) {
 	    System.out.println(message);
 	    System.out.print("> ");

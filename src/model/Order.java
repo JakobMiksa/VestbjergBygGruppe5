@@ -17,6 +17,7 @@ public class Order {
         this.orderLine = new ArrayList<>();
         this.orderId = generateSKU();
         this.date = java.time.LocalDate.now().toString();
+        this.deliveryStatus = DeliveryStatus.inStore;
     }
 
     public Order(String orderId, Customer customer, Staff staff, ArrayList<OrderLine> orderLine, OrderStatus orderStatus, DeliveryStatus deliveryStatus, double total, String date, String expiryDate) {
@@ -65,6 +66,10 @@ public class Order {
             total += line.getUnitPrice();
         }
         this.total = total;
+        if (this.deliveryStatus == DeliveryStatus.delivered) {
+            total += 500.0;
+            this.total = total;
+        }
     }
 
     public Staff getStaff() {

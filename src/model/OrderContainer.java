@@ -29,7 +29,6 @@ public class OrderContainer {
 		} else {
 			for (Order existingOrder : orders) {
 				if (existingOrder.getOrderId().equals(newOrder.getOrderId())) {
-					System.out.println("Fejl: Order med orderId: " + newOrder.getOrderId() + " findes allerede.);");
 					res = false;
 					return res;
 				}

@@ -30,7 +30,6 @@ public class ProductContainer {
 			for (Product existingProduct : products) {
 				if (existingProduct.getSKU().equals(product.getSKU())) {
 					res = false;
-					return res;
 				}
 			}
 			products.add(product);

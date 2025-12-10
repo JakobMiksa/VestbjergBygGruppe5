@@ -24,17 +24,4 @@ public class CustomerController {
 		return customerCont.findCustomer(customerId);
 	}
 	
-	public Customer printCustomerInfo(Customer customer) {
-	    System.out.println("****** Kunde Info ******");
-	    System.out.println("Navn:          " + customer.getName());
-	    System.out.println("Adresse:       " + customer.getAddress());
-	    System.out.println("Email:         " + customer.getEmail());
-	    System.out.println("Telefon:       " + customer.getPhone());
-	    System.out.println("Kunde ID:      " + customer.getCustomerId());
-	    System.out.println("Rabat:         " + customer.getPersonalDiscount() + " %");
-	    System.out.println("Status:        " + customer.getCustomerStatus());
-	    System.out.println("************************");
-	    
-	    return customer;
-	}
 }

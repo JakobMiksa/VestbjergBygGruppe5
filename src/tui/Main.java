@@ -11,6 +11,7 @@ public class Main {
     }
     
     public static void createTestData() {
+    	//Navn, Addresse, Email, Telefon, StaffID, Butik
     		 Staff staff1 = new Staff("Joe", "Joe Street", "joe@vestbjerg.dk", "101010", "1", "Trælast");
          StaffContainer.getInstance().addStaff(staff1);
 
@@ -20,7 +21,7 @@ public class Main {
          Location timber1 = new Location("Trælast");
          Price price1 = new Price(300);
          
-         Product product1 = new Product("001", price1, "45x220 Spær: Brugt til at bygge tag.", null, timber1);
+         Product product1 = new Product("001", price1, "45x220 Spær", null, timber1);
          
          Inventory inv1 = new Inventory(timber1, product1, 5, 100, 25);
          product1.setInventory(inv1);
