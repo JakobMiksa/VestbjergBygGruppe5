@@ -40,9 +40,23 @@ public class InventoryContainer {
      * Tilføjer et nyt {@link Inventory} til containeren.
      *
      * @param inventory inventarobjektet, der skal tilføjes
+     * @return 
      */
-    public void addInventory(Inventory inventory) {
-        inventories.add(inventory);
+    public boolean addInventory(Inventory inventory) {
+        boolean res = false;
+        if(inventories.size() == 0) {
+        	inventories.add(inventory);
+        	res = true;
+        } else {
+        	for(Inventory existingInventory : inventories) {
+        		if (existingInventory.getProduct() == inventory.getProduct());
+        		res = false;
+        		return res;
+        	}
+        	inventories.add(inventory);
+        	res = true;
+        }
+        return res;
     }
 
     /**

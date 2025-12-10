@@ -1,12 +1,24 @@
-import java.util.ArrayList;
-
-import model.InventoryContainer;
-import model.Location;
-
 package controller;
 
-public class InventoryController {
+import java.util.ArrayList;
+
+import model.Inventory;
+import model.InventoryContainer;
+import model.Location;
+import model.Product;
+
+public abstract class InventoryController {
 	 private InventoryContainer inventoryCont = InventoryContainer.getInstance();
-	 private Location location;
 	 
+	 	public InventoryController() {
+		 
+	 }
+	 	public Inventory createInventory(Location location, Product product, int minStock, int maxStock, int currStock) {
+	 	Inventory newInventory = new Inventory(location, product, minStock, maxStock, currStock); 
+	 	boolean success = inventoryCont.addInventory(newInventory); 
+	 	if (!success) {
+	 		newInventory = null;
+	 	}
+	 	return newInventory; 
+}
 }
