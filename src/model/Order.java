@@ -3,17 +3,22 @@ package model;
 import java.util.ArrayList;
 
 public class Order {
-	private Staff staff;
-	private Customer customer;
-	private ArrayList<OrderLine> orderLine;
 	private String orderId;
+	private Customer customer;
+	private Staff staff;
+	private ArrayList<OrderLine> orderLine;
 	private OrderStatus orderStatus;
 	private DeliveryStatus deliveryStatus;
 	private double total;
 	private String date;
 	private String expiryDate;
 	
-	public Order(Staff staff, Customer customer, ArrayList<OrderLine> orderLine, String orderId, OrderStatus orderStatus, DeliveryStatus deliveryStatus, double total, String date, String expiryDate) {
+	public Order() {
+		this.orderLine = new ArrayList<>();
+		this.orderId = "001";
+	}
+	
+	public Order(String orderId, Customer customer, Staff staff, ArrayList<OrderLine> orderLine, OrderStatus orderStatus, DeliveryStatus deliveryStatus, double total, String date, String expiryDate) {
 		this.staff = staff;
 		this.customer = customer;
 		this.orderId = orderId;
@@ -26,7 +31,22 @@ public class Order {
 		
 		orderLine = new ArrayList<>();
 	}
-
+	
+	public boolean addOrderLine(OrderLine line) {
+        if (line != null) {
+            return orderLine.add(line);
+        }
+        return false;
+    }
+	
+    public void recalculateTotal() {
+        double total = 0.0;
+        for (OrderLine line : orderLine) {
+            total += line.getUnitPrice();
+        }
+        this.total = total;
+    }
+    
 	public Staff getStaff() {
 		return staff;
 	}

@@ -55,4 +55,12 @@ public class Inventory {
 	public void setProduct(Product product) {
 		this.product = product;
 	}
+	
+	public void increaseStock(int amount) {
+	    if (this.currStock + amount <= this.maxStock) {
+	        this.currStock += amount;
+	    } else {
+	        System.out.println("Du kan ikke øge lageret med den ønsket værdi: maksimumlager overskrides.");
+	    }
+	}
 }
