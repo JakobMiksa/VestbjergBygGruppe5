@@ -29,7 +29,6 @@ public class ProductContainer {
 		} else {
 			for (Product existingProduct : products) {
 				if (existingProduct.getSKU().equals(product.getSKU())) {
-					System.out.println("Fejl: Vare med SKU: " + product.getSKU() + " findes allerede.");
 					res = false;
 					return res;
 				}
