@@ -39,12 +39,24 @@ public class Order {
         return false;
     }
 	
-    public void recalculateTotal() {
-        double total = 0.0;
+	public void recalculateTotal() {
+        double calculatedTotal = 0.0;
+
+        // 1. Sum of all products (existing logic)
         for (OrderLine line : orderLine) {
-            total += line.getUnitPrice();
+            calculatedTotal += line.getUnitPrice();
         }
-        this.total = total;
+
+        // 2. Delivery Fee Logic
+        double deliveryCost = 500.0; // Set your price here (e.g., 100 kr)
+
+        // Check if the status matches your Enum for delivered
+        if (this.deliveryStatus == DeliveryStatus.delivered) {
+            calculatedTotal += deliveryCost;
+        }
+
+        // 3. Update the final total
+        this.total = calculatedTotal;
     }
     
 	public Staff getStaff() {
