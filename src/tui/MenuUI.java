@@ -1,5 +1,6 @@
 package tui;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 import controller.OrderController;
 import controller.ProductController;
@@ -7,18 +8,23 @@ import controller.StaffController;
 import model.Customer;
 import model.CustomerStatus;
 import model.DeliveryStatus;
+import model.Inventory;
+import model.InventoryContainer;
 import model.Order;
 import model.OrderLine;
 import model.OrderStatus;
 import model.Product;
 import model.Staff;
 import controller.CustomerController;
+import controller.InventoryController;
 
 public class MenuUI {
 	private OrderController orderCtrl;
 	private ProductController productCtrl;
 	private CustomerController customerCtrl;
 	private StaffController staffCtrl;
+	private InventoryController inventoryCtrl;
+	private InventoryContainer inventoryCont = InventoryContainer.getInstance();
 	
 	private Scanner scanner;
 	
@@ -27,6 +33,7 @@ public class MenuUI {
 		productCtrl = new ProductController();
 		customerCtrl = new CustomerController();
 		staffCtrl = new StaffController();
+		inventoryCtrl = new InventoryController();
 		
 		scanner = new Scanner(System.in);
 		createMenu();
@@ -57,10 +64,64 @@ public class MenuUI {
 	}
 	
 	private void stockMenu() {
-		// TODO Auto-generated method stub
+		boolean created = false;
+		System.out.println("*** Lagerstyring ***");
+		System.out.println("Nuværende lagerstatus:");
 		
-	}
+        System.out.println("-----------------------------------------");
+        System.out.printf("%-30s %-10s %-10s\n", "Produkt", "Lager", "Pris pr stk.");
+        System.out.println("-----------------------------------------");
 
+        ArrayList<Product> products = productCtrl.getAllProducts();
+
+        if (products != null && !products.isEmpty()) {
+            for (Product p : products) {
+                String pName = (p.getInfo() != null) ? p.getInfo() : "Ukendt";
+                
+                int stock = (p.getInventory() != null) ? p.getInventory().getCurrStock() : 0;
+                
+                double price = (p.getPrice() != null) ? p.getPrice().getPrice() : 0.0;
+                
+                System.out.printf("%-30s %-10d %-10.2f\n", 
+                    (pName.length() > 30 ? pName.substring(0, 27) + "..." : pName), 
+                    stock, 
+                    price 
+                );
+            }
+        } else {
+            System.out.println("   (Ingen produkter i systemet)");
+        }
+        System.out.println("-----------------------------------------");
+		
+        String checkStock = prompt("Vil du køre automatisk lagertjek og sende mails til manager? (Ja/Nej)");
+        if (checkStock.equalsIgnoreCase("ja")) {
+            System.out.println("Kører tjek...");
+            stockWarning();
+        } else {
+            System.out.println("Returnerer til hovedmenu.");
+        }
+	}
+	
+ 	public void stockWarning() {
+        ArrayList<Inventory> lowStockItems = inventoryCont.getLowStockInventories();
+        
+        for (Inventory inv : lowStockItems) {
+            sendEmailToManager(inv);
+        }
+    }
+ 	
+ 	private void sendEmailToManager(Inventory inventory) {
+        Product p = inventory.getProduct();
+        String productName = (p != null) ? p.getInfo() : "Ukendt Produkt";
+        
+        System.out.println("--- EMAIL TIL ANDERS OLESEN ---");
+        System.out.println("Emne: GENBESTIL ADVARSEL!");
+        System.out.println("Produkt: " + productName);
+        System.out.println("Nuværende lager: " + inventory.getCurrStock());
+        System.out.println("Minimumslager antal: " + inventory.getMinStock());
+        System.out.println("Dette produkt er under minimumsbeholdning!");
+        System.out.println("------------------------");
+    }
 	private void createOrderMenu() {
 		boolean created = false;
         System.out.println("*** Opretter ordre ***");
@@ -134,7 +195,7 @@ public class MenuUI {
 
             if (inputVal.isEmpty()) {
                 System.out.println("Ingen kunde valgt. Fortsætter...");
-                break; // Stopper løkken (brugeren sprang over)
+                break; 
             }
 
             try {
@@ -148,14 +209,12 @@ public class MenuUI {
                         System.out.println("Kunde tilføjet.");
                         printCustomerInfo(customer);
                     }
-                    break; // Stopper løkken (succes - vi er færdige her)
+                    break; 
                 } else {
-                    // Her er INTET break, så løkken kører igen
                     System.out.println("Ingen kunde fundet med ID: " + customerId + ". Prøv igen.");
                 }
 
             } catch (NumberFormatException e) {
-                // Her er INTET break, så løkken kører igen
                 System.out.println("Fejl: ID skal være et tal, ikke bogstaver. Prøv igen.");
             }
         }
@@ -260,6 +319,7 @@ public class MenuUI {
 	    StringBuilder sb = new StringBuilder();
 	    sb.append("****** Vestbjerg Byggecenter ******\n");
 	    sb.append("(1) Opret ordre\n");
+	    sb.append("(2) Lagerstyring\n");
 	    sb.append("(0) Luk system\n");
 	    return sb.toString();
 	}

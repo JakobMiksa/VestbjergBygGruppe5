@@ -65,4 +65,8 @@ public class Inventory {
 	public void decreaseStock(int amount) {
 		this.currStock = this.currStock - amount;
 	}
+	
+	public boolean isStockLow() {
+        return currStock <= minStock;
+    }
 }

@@ -106,8 +106,14 @@ public class InventoryContainer {
      *
      * @return en ny liste med alle Inventory-objekter
      */
-    public List<Inventory> getAllInventories() {
-        return new ArrayList<>(inventories);
+    public ArrayList<Inventory> getLowStockInventories() {
+        ArrayList<Inventory> lowStockList = new ArrayList<>();
+        for (Inventory inv : inventories) {
+            if (inv.isStockLow()) {
+                lowStockList.add(inv);
+            }
+        }
+        return lowStockList;
     }
 
     /**

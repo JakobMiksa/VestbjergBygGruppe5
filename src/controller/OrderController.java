@@ -16,8 +16,7 @@ public class OrderController {
 	
 	public OrderController() {
 	}
-	
-	//M
+
 	public Order createOrder(Staff staff) {
 		Order order = new Order();
 		order.setStaff(staff);

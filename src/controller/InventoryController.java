@@ -7,12 +7,12 @@ import model.InventoryContainer;
 import model.Location;
 import model.Product;
 
-public abstract class InventoryController {
+public class InventoryController {
 	 private InventoryContainer inventoryCont = InventoryContainer.getInstance();
 	 
 	 	public InventoryController() {
 		 
-	 }
+	 	}
 	 	public Inventory createInventory(Location location, Product product, int minStock, int maxStock, int currStock) {
 	 	Inventory newInventory = new Inventory(location, product, minStock, maxStock, currStock); 
 	 	boolean success = inventoryCont.addInventory(newInventory); 
@@ -20,5 +20,6 @@ public abstract class InventoryController {
 	 		newInventory = null;
 	 	}
 	 	return newInventory; 
-}
+	 	}
+	
 }

@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.ArrayList;
+
 import model.Inventory;
 import model.Location;
 import model.Price;
@@ -23,5 +25,9 @@ public class ProductController {
 
 	public Product findProduct(String SKU) {
 		return productCont.findProduct(SKU);
+	}
+	
+	public ArrayList<Product> getAllProducts() {
+		return productCont.getProducts();
 	}
 }
