@@ -43,20 +43,15 @@ public class InventoryContainer {
      * @return 
      */
     public boolean addInventory(Inventory inventory) {
-        boolean res = false;
-        if(inventories.size() == 0) {
-        	inventories.add(inventory);
-        	res = true;
-        } else {
-        	for(Inventory existingInventory : inventories) {
-        		if (existingInventory.getProduct() == inventory.getProduct());
-        		res = false;
-        		return res;
-        	}
-        	inventories.add(inventory);
-        	res = true;
+        for (Inventory existingInventory : inventories) {
+            if (existingInventory.getProduct().getSKU().equals(inventory.getProduct().getSKU())) {
+                System.out.println("Fejl: Lager for dette produkt findes allerede.");
+                return false;
+            }
         }
-        return res;
+        
+        inventories.add(inventory);
+        return true;
     }
 
     /**

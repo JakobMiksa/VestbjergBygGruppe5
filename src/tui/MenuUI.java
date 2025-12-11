@@ -147,42 +147,58 @@ public class MenuUI {
             if (sku.isEmpty()) {
                 running = false; 
             } else {
-                Product product = productCtrl.findProduct(sku);
-                if (product != null) {
-                    
-                    int quantity = 0;
-                    boolean validInput = false;
+            	Product product = productCtrl.findProduct(sku);
+				if (product != null) {
+					boolean alreadyChosen = false;
+					for (OrderLine line : currOrder.getOrderLine()) {
+						if (line.getProduct().getSKU().equals(product.getSKU())) {
+							alreadyChosen = true;
+							break;
+						}
+					}
+					
+				if (alreadyChosen) {
+					System.out.println("Produktet er allerede tilføjet til kurven. Prøv igen!");
+				} else {
+					int currentStock = 0;
+					if (product.getInventory() != null) {
+						currentStock = product.getInventory().getCurrStock();
+					}
 
-                    while (!validInput) {
-                        String qtyString = prompt("Indtast antal (Lager: " + product.getInventory().getCurrStock() + "):");
+					if (currentStock <= 0) {
+						System.out.println("FEJL: Varen er udsolgt (Lager: 0). Kan ikke tilføjes.");
+					} else {
+						int quantity = 0;
+						boolean validInput = false;
 
-                        try {
-                            quantity = Integer.parseInt(qtyString);
+						while (!validInput) {
+							String qtyString = prompt("Indtast antal (Lager: " + currentStock + "):");
 
-                            if (quantity <= 0) {
-                                System.out.println("Antal skal være mindst 1.");
-                            }
+							try {
+								quantity = Integer.parseInt(qtyString);
 
-                            else if (quantity > product.getInventory().getCurrStock()) {
-                                System.out.println("Fejl: Der er kun " + product.getInventory().getCurrStock() + " stk. på lager.");
-                            }
-                            else {
-                                validInput = true;
-                            }
+								if (quantity <= 0) {
+									System.out.println("Antal skal være mindst 1.");
+								} else if (quantity > currentStock) {
+									System.out.println("Fejl: Der er kun " + currentStock + " stk. på lager.");
+								} else {
+									validInput = true;
+								}
 
-                        } catch (NumberFormatException e) {
-                            System.out.println("Fejl: Ugyldigt input. Indtast venligst et tal.");
-                        }
-                    }
+							} catch (NumberFormatException e) {
+								System.out.println("Fejl: Ugyldigt input. Indtast venligst et tal.");
+							}
+						}
 
-                    orderCtrl.addProduct(currOrder, product, quantity);
-                    System.out.println("Produkt tilføjet!");
-
-                } else {
-                    System.out.println("Produkt ikke fundet.");
-                }
-            }
-        }
+						orderCtrl.addProduct(currOrder, product, quantity);
+						System.out.println("Produkt tilføjet!");
+					}
+				}
+				} else {
+					System.out.println("Produkt ikke fundet.");
+				}
+			}
+		}
         
         if (currOrder.getOrderLine().isEmpty()) {
             System.out.println("Intet produkt tilføjet. Ordren annulleres.");
@@ -230,21 +246,24 @@ public class MenuUI {
 		if (deliveryOption.equalsIgnoreCase("ja")) {
 			System.out.println("Leveringsomkostninger beregnes...");
 			orderCtrl.changeDeliveryStatus(currOrder, DeliveryStatus.delivered);
-			orderCtrl.finishOrder(currOrder);
-			printInvoice(currOrder);
+			finishOrder(currOrder);
 		} else {
 			System.out.println("Der er ingen leveringsomkostninger.. Ordre færdiggøres.");
 			orderCtrl.changeDeliveryStatus(currOrder, DeliveryStatus.inStore);
-			orderCtrl.finishOrder(currOrder);
-			printInvoice(currOrder);
+			finishOrder(currOrder);
 			break;
 		}
 		created = true;
 	}
 }
 	
+	public void finishOrder(Order order) {
+	    orderCtrl.finishOrder(order);
+	    printInvoice(order);
+    }
+
 	public void printInvoice(Order order) {
-	    System.out.println("\n================ FAKTURA ================");
+		System.out.println("\n================ FAKTURA ================");
 	    System.out.println("Ordre ID:    " + order.getOrderId());
 	    System.out.println("Dato:        " + order.getDate()); 
 	    System.out.println("Status:      " + order.getOrderStatus());
@@ -287,8 +306,8 @@ public class MenuUI {
 
 	    System.out.printf("TOTAL BELØB:                  %10.2f\n", order.getTotal());
 	    System.out.println("=========================================\n");
-    }
-
+	}
+	
 	public Customer printCustomerInfo(Customer customer) {
 	    System.out.println("****** Kunde Info ******");
 	    System.out.println("Navn:          " + customer.getName());
