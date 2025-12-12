@@ -17,9 +17,9 @@ public class Main {
         StaffContainer.getInstance().addStaff(staff2);
         StaffContainer.getInstance().addStaff(staff3);
 
-        Customer customer1 = new Customer("Christian", "Christiansgade", "prodjody@gmail.com", "202020", 1, 15, CustomerStatus.Private);
+        Customer customer1 = new Customer("Christian", "Christiansgade", "prodjody@gmail.com", "202020", 1, 15, CustomerStatus.Business);
         Customer customer2 = new Customer("Sofie", "Sofiegade", "sofie@gmail.com", "303030", 2, 10, CustomerStatus.Private);
-        Customer customer3 = new Customer("Lars", "Larsvej", "lars@gmail.com", "404040", 3, 5, CustomerStatus.Private);
+        Customer customer3 = new Customer("Lars", "Larsvej", "lars@gmail.com", "404040", 3, 5, CustomerStatus.Business);
 
         CustomerContainer.getInstance().addCustomer(customer1);
         CustomerContainer.getInstance().addCustomer(customer2);
