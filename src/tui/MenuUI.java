@@ -122,6 +122,7 @@ public class MenuUI {
         System.out.println("Dette produkt er under minimumsbeholdning!");
         System.out.println("------------------------");
     }
+ 	
 	private void createOrderMenu() {
 		boolean created = false;
         System.out.println("*** Opretter ordre ***");

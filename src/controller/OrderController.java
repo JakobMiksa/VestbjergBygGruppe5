@@ -26,14 +26,12 @@ public class OrderController {
 	
     public boolean addProduct(Order order, Product product, int quantity) {
     	boolean res = false;
-        if (product == null) {
-        	res = true;
-        	return res;
+        if (product != null) {
+       		OrderLine line = new OrderLine(quantity, product.getPrice().getPrice() * quantity, product); 
+       		order.addOrderLine(line);
+    			order.recalculateTotal();
+    			res = true;
         }
-        
-        OrderLine line = new OrderLine(quantity, product.getPrice().getPrice() * quantity, product);
-        order.addOrderLine(line);
-        order.recalculateTotal();
         return res;
     }
     
@@ -61,7 +59,7 @@ public class OrderController {
 			}
 		}
 		order.recalculateTotal();
-		changeOrderStatus(order, OrderStatus.finished);
+		order.setOrderStatus(OrderStatus.finished);
 		return orderCont.addOrder(order);
 	}
 }

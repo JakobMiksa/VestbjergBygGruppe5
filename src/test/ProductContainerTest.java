@@ -14,8 +14,6 @@ class ProductContainerTest {
 
 	@BeforeEach
 	void setUp() {
-		// VIGTIGT: Vi nulstiller Singleton-instansen før hver test.
-		// Hvis vi ikke gør dette, vil produkter fra forrige test stadig ligge der.
 		ProductContainer.instance = null;
 		container = ProductContainer.getInstance();
 		
@@ -57,7 +55,6 @@ class ProductContainerTest {
 	void testCannotAddDuplicateSKU() {
 		container.addProduct(product1);
 		
-		// Vi opretter et NYT produkt objekt, men med SAMME SKU som product1
 		Product duplicateProduct = new Product("SKU_001", new Price(200), "Anden Hammer", null, new Location("Butik"));
 		
 		boolean result = container.addProduct(duplicateProduct);
